@@ -13,13 +13,25 @@ visited = [False] * (N+1)
 total = 0 # 경로의 개수를 저장할 변수
 
 for _ in range(N-1):
-    a, b = map(int, input().split())
+    a, b = map(int, sys.stdin.readline().split())
     graph[a].append(b)
     graph[b].append(a)
     
     # 두 정점 모두 실내이면 경로의 수 2 증가
     if inside[a] == "1" and inside[b] == "1":
         total += 2
+    
+def BFS(start):
+    inside_count = 0
+    q = deque()
+    q.append(start)
+    visited[start] = True
+    while q:
+        v = q.popleft()
+        for v in graph[v]:
+            if inside[v] == '1':
+                inside_count += 1
+        return inside_count
     
 def DFS(start):
     visited[start] = True # 방문 처리
@@ -34,9 +46,10 @@ def DFS(start):
             inside_count += DFS(v)
     return inside_count # 실내 노드 개수 반환
 
+
 for i in range(1, N+1):
     if inside[i] == '0' and not visited[i]: # 시작이 실외일 때만 탐색
-        result = DFS(i) # DFS를 통해 인접한 실내 노드 개수를 계산
+        result = BFS(i) # DFS를 통해 인접한 실내 노드 개수를 계산
         total += (result) * (result - 1) # 경로의 개수 추가
 
 print(total)
